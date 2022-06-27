@@ -1,0 +1,12 @@
+{
+    "makefile.extensionOutputFolder": "./.vscode",
+    "files.associations": {
+        "times.h": "c",
+        "utsname.h": "c",
+        "sched.h": "c",
+        "segment.h": "c",
+        "fs.h": "c",
+        "mm.h": "c",
+        "types.h": "c"
+    }
+}
