@@ -205,3 +205,55 @@ struct ne
 };
 ```
 
+
+
+### 0x03 放弃网卡，改写鼠标驱动和图形界面
+
++ 驱动鼠标
++ 让显示器在图形模式下工作
++ 设计并实现一个事件（消息）驱动系统
++ 实现一个可视化应用程序
+
+kernel/chr_drc/console.c
+
+```c
+:57+
+extern void mouse_interrupt(void);
+
+:685+ set_trap_gate(0x2c,&mouse_interrupt);
+```
+
+kernel/chr_drc/keyboard.S
+
+```
+:17+
+.globl mouse_interrupt
+
+:38-64+
+mouse_interrupt:
+	pushl %eax
+	pushl %ebx
+	pushl %ecx
+	pushl %edx
+	push %ds
+	
+	movl $0x10,%eax
+	mov %ax,%ds
+	xor %eax,%eax
+	inb $0x60,%al
+	pushl %eax
+	call readmouse
+
+	addl $4,%esp
+	movb $0x20,%al
+	outb %al,$0xA0 
+	outb %al,$0x20
+	
+	pop %ds
+	popl %edx
+	popl %ecx
+	popl %ebx
+	popl %eax
+	iret
+```
+
