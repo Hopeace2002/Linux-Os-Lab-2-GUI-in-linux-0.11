@@ -146,3 +146,62 @@ NE2000 分为三个寄存器页
 #### 读取网卡的MAC地址
 
 MAC地址放在网卡片上的PROM
+
+添加读取字函数inw（linux 0.11 中没有）
+
+```c
+static unsigned short inline inw( unsigned short port )
+{
+   unsigned short _v;
+   
+   __asm__ volatile ("inw %1,%0"
+		     :"=a" (_v):"d" ((unsigned short) port));
+   return _v;
+}
+```
+
+
+
+调用
+
+```c
+	unsigned short prom[6];
+	int j;
+	for(j = 0; j < 6; j++)
+	{
+		prom[j] = inw(NE_IOBASE + NE_DATAPORT);
+	}
+```
+
+
+
+按理说可以得到mac地址
+
+可是不行
+
+
+
+#### 网卡初始化
+
+创建文件include/liux/netinit.h
+
+定义网卡管理数据结构
+
+```C
+struct macaddr
+{
+    unsigned char bytes[6];
+};
+struct ne
+{
+    unsigned short iobase;
+    unsigned short irq;
+    unsigned short membase; // 缓存区首地址
+    unsigned short memsize; // 缓存区的大小
+    unsigned char rx_page_start; // 发送缓存区的开始页号
+    unsigned char rx_page_stop; // 发送缓存区的结束页号
+    unsigned char next_packet; // 下一个未读的接收到的数据包
+    struct macaddr paddr;   // 网卡的MAC地址，将来收发数据包时要用到
+};
+```
+
