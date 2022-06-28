@@ -149,7 +149,9 @@
 #define __NR_hopeace 89
 #define __NR_sleep 90
 #define __NR_getcwd 91
-
+#define __NR_init_graphics 92
+#define __NR_get_message 93
+#define __NR_repaint 94
 
 
 #define _syscall0(type,name) \
