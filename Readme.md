@@ -46,7 +46,7 @@ git push origin master 推到github里
 
 
 
-### 0x02 阅读书籍
+### 0x02 实验操作
 
 #### 1.项目的基本任务
 
@@ -59,9 +59,9 @@ git push origin master 推到github里
 
 
 
-#### 2. 网卡驱动
+#### 2. 网卡驱动配置
 
-修改Bochs配置文件bochsrc.bxrc
+修改Bochs配置文件bochsrc.bxrc（本实验环境名为0.11.bxrc）
 
 pci:enabled=1,chipset=i440fx,slot2=ne2k
 ne2k:ioaddr=0x300,irq=10,mac=b0:c4:20:00:00:01,ethmod=linux,ethdev=eth0
@@ -99,7 +99,7 @@ ne2k:ioaddr=0x300,irq=10,mac=b0:c4:20:00:00:01,ethmod=tuntap,ethdev=/dev/net/tun
 
 即将tap0网络接口IP设置为192.168.1.11
 
-本次环境中Bochs为2.6.9版本
+本次环境中Bochs为2.6.8版本
 
 执行
 
@@ -108,3 +108,41 @@ ne2k:ioaddr=0x300,irq=10,mac=b0:c4:20:00:00:01,ethmod=tuntap,ethdev=/dev/net/tun
 make
 ```
 
+
+
+测试一下网卡
+
+
+```bash
+nudt@uvm:~$ sudo tcpdump -i eth0
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth0, link-type EN10MB (Ethernet), capture size 65535 bytes
+02:03:29.431371 IP 192.168.1.11.netbios-ns > 192.168.1.255.netbios-ns: NBT UDP PACKET(137): REGISTRATION; REQUEST; BROADCAST
+02:03:29.431536 IP 192.168.1.11.netbios-dgm > 192.168.1.255.netbios-dgm: NBT UDP PACKET(138)
+02:03:29.431824 IP 192.168.1.11.netbios-dgm > 192.168.1.255.netbios-dgm: NBT UDP PACKET(138)
+02:03:29.431934 IP 192.168.1.11.netbios-dgm > 192.168.1.255.netbios-dgm: NBT UDP PACKET(138)
+
+```
+
+
+
+NE2000 分为三个寄存器页
+
+由PS0和PS1控制选择哪个寄存器页
+
+应用程序发送一个数据包
+
+操作系统将主存里的数据包复制到BUFFER RAM中，由NE2000发出“发送数据包命令” => 由网卡硬件从BUFFER RAM中逐个字节/字取出要发送的内容，放到FIFO控制器上 => FIFO将这些内容放到网线上
+
+所以NE2000涉及两种类型的内存访问
+
++ 对网卡内部缓存的访问
++ 对系统主存的访问
+
+通过本地DMA（BUFFER RAM）和远程DMA（MAIN RAM）来完成（直接存储器存储）
+
+
+
+#### 读取网卡的MAC地址
+
+MAC地址放在网卡片上的PROM

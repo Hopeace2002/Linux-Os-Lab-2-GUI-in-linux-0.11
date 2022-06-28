@@ -8,6 +8,12 @@ __asm__ volatile ("inb %%dx,%%al":"=a" (_v):"d" (port)); \
 _v; \
 })
 
+#define inw(port) ({ \
+unsigned char _v; \
+__asm__ volatile ("inb %%dx,%%al":"=a" (_v):"d" (port)); \
+_v; \
+})
+
 #define outb_p(value,port) \
 __asm__ ("outb %%al,%%dx\n" \
 		"\tjmp 1f\n" \

@@ -7,7 +7,6 @@
 #define __LIBRARY__
 #include <unistd.h>
 #include <time.h>
-
 /*
  * we need this inline - forking from kernel space will result
  * in NO COPY ON WRITE (!!!), until an execve is executed. This
@@ -58,6 +57,8 @@ extern long startup_time;
 #define EXT_MEM_K (*(unsigned short *)0x90002)
 #define DRIVE_INFO (*(struct drive_info *)0x90080)
 #define ORIG_ROOT_DEV (*(unsigned short *)0x901FC)
+#define NE_IOBASE 0x10
+#define NE_DATAPORT 0xc02
 
 /*
  * Yeah, yeah, it's ugly, but I cannot find how to do this correctly
@@ -174,6 +175,12 @@ void init(void)
 	(void) open("/dev/tty0",O_RDWR,0);
 	(void) dup(0);
 	(void) dup(0);
+	unsigned short prom[6];
+	int j;
+	for(j = 0; j < 6; j++)
+	{
+		prom[j] = inw(NE_IOBASE + NE_DATAPORT);
+	}
 	printf("%d buffers = %d bytes buffer space\n\r",NR_BUFFERS,
 		NR_BUFFERS*BLOCK_SIZE);
 	printf("Free mem: %d bytes\n\r",memory_end-main_memory_start);
