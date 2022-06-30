@@ -57,9 +57,17 @@ extern long startup_time;
 #define EXT_MEM_K (*(unsigned short *)0x90002)
 #define DRIVE_INFO (*(struct drive_info *)0x90080)
 #define ORIG_ROOT_DEV (*(unsigned short *)0x901FC)
-#define NE_IOBASE 0x10
-#define NE_DATAPORT 0xc02
+// #define NE_IOBASE 0x10
+// #define NE_DATAPORT 0xc02
 
+static unsigned short inline inw( unsigned short port )
+{
+   unsigned short _v;
+   
+   __asm__ volatile ("inw %1,%0"
+		     :"=a" (_v):"d" ((unsigned short) port));
+   return _v;
+}
 /*
  * Yeah, yeah, it's ugly, but I cannot find how to do this correctly
  * and this seems to work. I anybody has more info on the real-time
@@ -175,12 +183,12 @@ void init(void)
 	(void) open("/dev/tty0",O_RDWR,0);
 	(void) dup(0);
 	(void) dup(0);
-	unsigned short prom[6];
-	int j;
-	for(j = 0; j < 6; j++)
-	{
-		prom[j] = inw(NE_IOBASE + NE_DATAPORT);
-	}
+	// unsigned short prom[6];
+	// int j;
+	// for(j = 0; j < 6; j++)
+	// {
+	// 	prom[j] = inw(NE_IOBASE + NE_DATAPORT);
+	// }
 	printf("%d buffers = %d bytes buffer space\n\r",NR_BUFFERS,
 		NR_BUFFERS*BLOCK_SIZE);
 	printf("Free mem: %d bytes\n\r",memory_end-main_memory_start);

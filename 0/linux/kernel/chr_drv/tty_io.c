@@ -13,6 +13,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <signal.h>
+#include <linux/kernel.h>
 
 #define ALRMMASK (1<<(SIGALRM-1))
 #define KILLMASK (1<<(SIGKILL-1))
@@ -348,58 +349,192 @@ void chr_dev_init(void)
 {
 }
 
+int volatile jumpp;
 static unsigned char mouse_input_count = 0; //用来记录是鼠标输入的第几个字节的全局变量
 static unsigned char mouse_left_down; //用来记录鼠标左键是否按下
 static unsigned char mouse_right_down; //用来记录鼠标右键是否按下
 static unsigned char mouse_left_move; //用来记录鼠标是否向左移动
 static unsigned char mouse_down_move;//用来记录鼠标是否向下移动
 
-static int mouse_x_position; //用来记录鼠标的 x 轴位置
-static int mouse_y_position;//用来记录鼠标的 y 轴位置
+static int mouse_x_position = 20; //用来记录鼠标的 x 轴位置
+static int mouse_y_position = 20;//用来记录鼠标的 y 轴位置
+
 static int  fcreate=0;
 int cnt=0;
+// void readmouse(int mousecode)
+// {
+// 	if(mousecode == 0xFA)
+// 	{
+// 		mouse_input_count = 1;
+// 		return 0;
+// 	}
+// 	switch (mouse_input_count)
+// 	{
+// 	case 1:
+// 		mouse_left_down = (mousecode & 0x1) == 0x1;
+// 		mouse_right_down = (mousecode & 0x2) == 0x2;
+// 		mouse_left_move = (mousecode & 0x10) == 0x10;
+// 		mouse_down_move = (mousecode & 0x20) == 0x20;
+// 		mouse_input_count++;
+// 		break;
+// 	case 2:
+// 		if(mouse_left_move)
+// 			mouse_x_position += (int)(0xFFFFFF00 | mousecode);
+// 		if(mouse_x_position > 100)
+// 			mouse_x_position = 100;
+// 		if(mouse_x_position < 0)
+// 			mouse_x_position = 0;
+// 		break;
+// 	case 3:
+// 		if (mouse_down_move)
+// 			mouse_y_position += (int)(0xFFFFFF00 | mousecode);
+// 		if(mouse_y_position > 100)
+// 			mouse_y_position = 100;
+// 		if(mouse_y_position < 0)
+// 			mouse_y_position = 0;
+// 		break;
+// 	default:
+// 		break;
+// 	}
+// }
+
+// void post_message()
+// {
+// cli();
+// if(jumpp<=10)
+// jumpp++;
+// sti();
+// return;
+// }
+
+// void tt()
+// {
+// jumpp=33;
+// return ;
+// }
+
+
 void readmouse(int mousecode)
 {
+	printk("hello");
 if(fcreate==0)
 {
 	fcreate=1;
 cnt=33;
+//mouse_input_count=0;
+	//jumpp=0;
+}
+//jumpp=mousecode;
+
+//cli();
 if(mousecode==0xFA || mouse_input_count>=4 )
 {
 	mouse_input_count=1;
+//jumpp=600;
+//jumpp=cnt;
+//jumpp+=3;
+//jumpp++;
+//post_message();
 return ;
 }
+//jumpp=0;
 if(cnt!=mousecode)
 {
+//jumpp=mousecode;
 cnt=mousecode;
 }
+//jumpp=mousecode;
 switch(mouse_input_count)
 {
 case 1:
+//cuowei sheqi
+//if( (mousecode & 0xc8) == 0x08 )
+//if((mousecode & 0xc8) == 0x08)
 {
 	mouse_left_down=(mousecode &0x01) ==0x01;
 	mouse_right_down=(mousecode &0x02)==0x02;
 	mouse_left_move=(mousecode & 0x10)==0x10;
 	mouse_down_move=(mousecode & 0x20)==0x20;
 	mouse_input_count++;
+//jumpp=mouse_left_move;
+	//jumpp=mousecode;  
+	//jumpp+=1;
+//jumpp++;
+}
+//return 0;
+ 
+	//jumpp+=1;
+	//jumpp=mouse_left_down;
+//jumpp=11;
+//jumpp=mousecode;
+// you yan chi ,zai 0xfa chu wu yan chi
 	if(mouse_left_down==1 && mouse_left_move==0 && mouse_down_move==0){
 	post_message();
+	//jumpp+=10;
 	}
+//return;
+//mouse_input_count++;
 	break;
 case 2:
 	if(mouse_left_move) mouse_x_position +=(int)(0xFFFFFF00|mousecode);
 	if(mouse_x_position>100) mouse_x_position=100;
 	if(mouse_x_position<0) mouse_x_position=10;
+//	jumpp=200;
+//jumpp=mousecode;
+//jumpp=22;
+//jumpp+=10;
+//return ;
 mouse_input_count++;
 	break;
 case 3:
+//           jumpp=33;
 	if(mouse_down_move) mouse_y_position +=(int)(0xFFFFFF00|mousecode);
 	if(mouse_y_position>100) mouse_y_position=100;
 	if(mouse_y_position<0) mouse_y_position=0;
+//157 
+//jumpp=mousecode;
+	//mouse_input_count++;
+//jumpp+=10;
+//jumpp++;
 	mouse_input_count++;
+//jumpp-=10;
+//jumpp=33;
+//jumpp++;
 	break;
 case 4:
+// gun lun ,mouse3
+//jumpp++;
+//jumpp=44;
+// zan shi bu xie
+//jumpp-=10;
 jumpp=jumpp;
 break;
+}
+//jumpp=mouse_left_down;
+//jumpp=mouse_input_count;
+//jumpp=mouse_x_position;
+//sti();
+}
 
+
+void post_message()
+{
+//	struct message *curr;
+//	curr->next=headd->next;
+//	if(msgg==NULL)return;
+//	while(curr->next!=NULL) {
+//	curr=curr->next;
+//}
+//curr->next=msgg;
+cli();
+if(jumpp<=10)
+jumpp++;
+sti();
+return;
+}
+
+void tt()
+{
+jumpp=33;
+return ;
 }

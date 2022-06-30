@@ -679,15 +679,18 @@ void con_init(void)
 	scr_end	= video_mem_start + video_num_lines * video_size_row;
 	top	= 0;
 	bottom	= video_num_lines;
-
+	gotoxy(ORIG_X,ORIG_Y);
 	outb_p(0xA8,0x64);
+	outb_p(0xD4,0x64);
+	outb_p(0xFF,0x60);
 	outb_p(0xD4,0x64);
 	outb_p(0xF4,0x60);
 	outb_p(0x60,0x64);
 	outb_p(0x47,0x60);
-	gotoxy(ORIG_X,ORIG_Y);
+	
 	set_trap_gate(0x21,&keyboard_interrupt);
 	set_trap_gate(0x2c,&mouse_interrupt);
+
 	outb_p(inb_p(0x21)&0xF9,0x21); // 合并了原来的fd和需要的fb为f9，两位均置零 11111001
 	outb_p(inb_p(0xA1)&0xEF,0xA1);
 

@@ -278,7 +278,9 @@ int execve2(const char *path, char * argv[], char * envp[]);
 int getdents(unsigned int fd, struct linux_dirent *dirp, unsigned int count);
 long getcwd(char * buf, size_t size);
 int hopeace();
-
+int init_graphics();
+int get_message();
+int repaint();
 
 #define __always_inline inline __attribute__((always_inline))
 
