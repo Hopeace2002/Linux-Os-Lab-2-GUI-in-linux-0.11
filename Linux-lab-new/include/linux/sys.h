@@ -3,8 +3,13 @@
  */
 
 
+/*
+ * mid => message id
+ * pid => process identifier
+ * pid = -1 when current->pid
+*/
 typedef struct {
-    int mid;   //消息ID
+    int mid;   
     int pid;
 }message;
 message msg_list[1024];

@@ -352,14 +352,14 @@ void chr_dev_init(void)
 
 #define CLICK_LEFT 1
 #define CLICK_RIGHT 2
-static unsigned char mouse_input_count = 0;
-static unsigned char mouse_left_move;
-static unsigned char mouse_down_move;
-static unsigned char mouse_x_position = 0;
-static unsigned char mouse_y_position = 0;
+static unsigned char mouse_input_count = 0; //用来记录是鼠标输入的第几个字节的全局变量
+static unsigned char mouse_left_move;		//用来记录鼠标是否向左移动
+static unsigned char mouse_down_move;		//用来记录鼠标是否向下移动
+static unsigned char mouse_x_position = 0;	//用来记录鼠标的 x 轴位置
+static unsigned char mouse_y_position = 0;	//用来记录鼠标的 y 轴位置
 void readmouse(int mousecode)
 {
-    if(mousecode == 0xFA){  //鼠标命令成功响应
+    if(mousecode == 0xFA){  				//鼠标响应
         mouse_input_count = 1;
         return ;
     }
@@ -369,10 +369,10 @@ void readmouse(int mousecode)
             mouse_left_move = (mousecode & 0x10) == 0x10;
             mouse_down_move = (mousecode & 0x20) == 0x20;
            	if(mousecode==9){
-                post_message(CLICK_LEFT);  //1左击
+                post_message(CLICK_LEFT);
             }
             if(mousecode==10){
-                post_message(CLICK_RIGHT);  //2右击
+                post_message(CLICK_RIGHT);
             }
             mouse_input_count++;
             break;

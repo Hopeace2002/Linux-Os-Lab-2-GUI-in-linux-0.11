@@ -155,7 +155,7 @@ int sys_pause(void)
 
 void post_message(int type)
 {
-	if (msg_tail != msg_head - 1) { //未满
+	if (msg_tail != msg_head - 1) {
 		message msg;
 		msg.mid = type;
 		msg.pid = current->pid;
@@ -204,7 +204,7 @@ int sys_get_message(message *msg){
 	}
 	
 	tmp = msg_list[msg_head];
-	msg_list[msg_head].mid = 0;   //清空
+	msg_list[msg_head].mid = 0;   // clear all
 	msg_head = (msg_head + 1) % 1024;
 	put_fs_long(tmp.mid,&msg->mid);
 	put_fs_long(current->pid,&msg->pid);
@@ -242,8 +242,7 @@ int sys_init_graphics(void){
     char * p;
     p = (char *)vga_graph_memstart;
     for (i = 0; i < vga_graph_memsize; ++i)
-        *p++ = 3;
-
+        *p++ = 3;		// 将背景颜色设置为蓝绿色
 	return 0;
 }
 
@@ -416,7 +415,7 @@ void do_timer(long cpl)
 		timer->jiffies--;
 		if (timer->jiffies == 0) {
 			post_message(TIMER_ARRIVE);
-			if (timer->type == 0) {  //无数次闹钟
+			if (timer->type == 0) {
 				timer->jiffies = timer->init_jiffies;
 				pre = timer;
 				timer = timer->next;
