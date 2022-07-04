@@ -11,16 +11,18 @@ typedef struct{
 } object;
 
 _syscall0(int,init_graphics);
-_syscall1(int,paint,object *,yyh);
+_syscall1(int,paint,object *, GUI);
 
 int main(void)
 {
-    object yyh;
+    object GUI;
+    // 初始化图形界面
     init_graphics();
-    yyh.x = 50;
-    yyh.y = 50;
-    yyh.dx = 10;
-    yyh.dy = 10;
-	yyh.color = 12;
-    paint(&yyh);
+    GUI.x = 50;
+    GUI.y = 50;
+    GUI.dx = 10;
+    GUI.dy = 10;
+	GUI.color = 12;
+    // 绘画图形界面
+    paint(&GUI);
 }

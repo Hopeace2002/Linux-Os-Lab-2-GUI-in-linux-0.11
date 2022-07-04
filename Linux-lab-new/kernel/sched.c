@@ -155,7 +155,6 @@ int sys_pause(void)
 
 void post_message(int type)
 {
-	cli();
 	if (msg_tail != msg_head - 1) { //未满
 		message msg;
 		msg.mid = type;
@@ -163,11 +162,10 @@ void post_message(int type)
 		msg_list[msg_tail] = msg;
 		msg_tail = (msg_tail + 1) % 1024;
 	}
-	sti();
 }
 
 int sys_paint(object* p){
-	char *yyh;
+	char *GUI;
 	int i;
 	int j;
 	long x = get_fs_long(&p->x);
@@ -177,8 +175,8 @@ int sys_paint(object* p){
 	long color = get_fs_long(&p->color);
 	for(i=x;i<x+dx;i++) if (0 <= i && i < vga_width)
 		for(j=y;j<y+dy;j++) if (0 <= j && j < vga_height){
-			yyh = (char *)vga_graph_memstart+j*vga_width+i;
-			*yyh = color;
+			GUI = (char *)vga_graph_memstart+j*vga_width+i;
+			*GUI = color;
 		}
 	return 0;
 }
@@ -198,7 +196,6 @@ int sys_timer_create(long seconds, int type)
 
 
 int sys_get_message(message *msg){
-	cli();
     message tmp;
 	if(msg_tail==msg_head){  //循环消息队列
 		put_fs_long(0,&msg->mid);
@@ -211,7 +208,6 @@ int sys_get_message(message *msg){
 	msg_head = (msg_head + 1) % 1024;
 	put_fs_long(tmp.mid,&msg->mid);
 	put_fs_long(current->pid,&msg->pid);
-	sti();
 	return 0;
 }
 
@@ -416,7 +412,7 @@ void do_timer(long cpl)
 	user_timer *timer = timer_head;
 	user_timer *pre = NULL;
 	while (timer) {
-		user_timer *yyh = timer->next;
+		user_timer *U_timer = timer->next;
 		timer->jiffies--;
 		if (timer->jiffies == 0) {
 			post_message(TIMER_ARRIVE);
@@ -432,7 +428,7 @@ void do_timer(long cpl)
 		}
 		else{
 			pre = timer;
-			timer = yyh;			 
+			timer = U_timer;			 
 		}
 	}
 	

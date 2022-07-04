@@ -70,33 +70,35 @@ void init(void)
 	fron = rear = 0;
 	return ;
 }
-
-
+ 
+// GUI_P Paint背景
+// GUI_B Bird
+// GUI_T Track
 void Paint(void)
 {
-	object yyh1,yyh2,yyh3;
+	object GUI_P,GUI_B,GUI_T;
 	int i;
-	yyh1.x = 0;yyh2.x = bird.x;
-	yyh1.y = 0;yyh2.y = bird.y;
-	yyh1.dx = VAG_WIDTH;yyh2.dx = bird.dx;
-	yyh1.dy = VGA_HEIGHT;yyh2.dy = bird.dy;
-	yyh1.color = BACKGROUND_COLOR;yyh2.color = BIRD_COLOR;
-	paint(&yyh1);paint(&yyh2);
+	GUI_P.x = 0;GUI_B.x = bird.x;
+	GUI_P.y = 0;GUI_B.y = bird.y;
+	GUI_P.dx = VAG_WIDTH;GUI_B.dx = bird.dx;
+	GUI_P.dy = VGA_HEIGHT;GUI_B.dy = bird.dy;
+	GUI_P.color = BACKGROUND_COLOR;GUI_B.color = BIRD_COLOR;
+	paint(&GUI_P);paint(&GUI_B);
 	for (i = fron; i != rear; i = (i + 1) % MAX_BARRIER)
 	{
-		yyh3.x = barriers[i].x;
-		yyh3.y = barriers[i].y;
-		yyh3.dx = barriers[i].dx;
-		yyh3.dy = barriers[i].dy;
-		yyh3.color = BARRIER_COLOR;
-		paint(&yyh3);
+		GUI_T.x = barriers[i].x;
+		GUI_T.y = barriers[i].y;
+		GUI_T.dx = barriers[i].dx;
+		GUI_T.dy = barriers[i].dy;
+		GUI_T.color = BARRIER_COLOR;
+		paint(&GUI_T);
 	}
 }
 
 int main(void)
 {
 	message msg;
-	timer_create(SECONDS, TYPE); 
+	timer_create(SECONDS, 0); 
 	init_graphics();			
 	init();
 	while (1){
